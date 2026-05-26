@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.3.21"
+    jacoco
 }
 
 group = "org.example"
@@ -18,9 +19,21 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(24)
+    jvmToolchain(21)
+}
+
+jacoco {
+    toolVersion = "0.8.12"
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required = true
+        html.required = true
+    }
 }

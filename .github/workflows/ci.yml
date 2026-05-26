@@ -28,17 +28,30 @@ jobs:
       - name: Grant execute permission to Gradle
         run: chmod +x gradlew
 
-      # ── Build ──────────────────────────────────────────
+      # ── Build
       - name: Build
         run: ./gradlew build -x test
 
-      # ── Tests ──────────────────────────────────────────
+      # ── Tests
       - name: Run tests
         run: ./gradlew test
 
-      # ── Publish test results ───────────────────────────
+      # ── Rapport de couverture JaCoCo
+      - name: Generate JaCoCo report
+        run: ./gradlew jacocoTestReport
+
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: build/test-results/test/*.xml
+
+      # ── Publier la couverture dans le pipeline
+      - name: Publish coverage report
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          paths: build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
+          title: Code Coverage
