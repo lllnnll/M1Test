@@ -41,8 +41,8 @@ tasks.jacocoTestReport {
 
 pitest {
     junit5PluginVersion = "1.2.1"
-    targetClasses = setOf("org.example.your.`package`.*")
-    targetTests = setOf("your.`package`.*")
+    targetClasses = setOf("org.example.your.package.*")
+    targetTests = setOf("your.package.*")
     mutators = setOf("DEFAULTS")
     outputFormats = setOf("XML", "HTML")
     timestampedReports = false
