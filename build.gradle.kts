@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.3.21"
     jacoco
+    id("info.solidsoft.pitest") version "1.15.0"
 }
 
 group = "org.example"
@@ -36,4 +37,13 @@ tasks.jacocoTestReport {
         xml.required = true
         html.required = true
     }
+}
+
+pitest {
+    junit5PluginVersion = "1.2.1"
+    targetClasses = setOf("org.example.your.`package`.*")
+    targetTests = setOf("your.`package`.*")
+    mutators = setOf("DEFAULTS")
+    outputFormats = setOf("XML", "HTML")
+    timestampedReports = false
 }
