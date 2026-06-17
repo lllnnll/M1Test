@@ -36,7 +36,11 @@ jobs:
       - name: Run tests
         run: ./gradlew test
 
-      # ── Rapport de couverture JaCoCo
+      # ── Tests d'intégration
+      - name: Run integration tests
+        run: ./gradlew testIntegration
+
+      # ── Rapport de couverture JaCoCo (unit + intégration)
       - name: Generate JaCoCo report
         run: ./gradlew jacocoTestReport
 
@@ -44,7 +48,9 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          files: build/test-results/test/*.xml
+          files: |
+            build/test-results/test/*.xml
+            build/test-results/testIntegration/*.xml
 
       # ── Publier la couverture dans le pipeline
       - name: Publish coverage report
