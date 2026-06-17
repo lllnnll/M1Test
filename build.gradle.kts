@@ -36,10 +36,34 @@ testing {
                 }
             }
         }
+        val testComponent by registering(JvmTestSuite::class) {
+            sources {
+                kotlin {
+                    setSrcDirs(listOf("src/testComponent/kotlin"))
+                }
+                resources {
+                    setSrcDirs(listOf("src/testComponent/resources"))
+                }
+                compileClasspath += sourceSets.main.get().output
+                runtimeClasspath += sourceSets.main.get().output
+            }
+            targets {
+                all {
+                    testTask.configure {
+                        useJUnitPlatform()
+                        environment("DOCKER_API_VERSION", "1.44")
+                    }
+                }
+            }
+        }
     }
 }
 
 val testIntegrationImplementation: Configuration by configurations.getting {
+    extendsFrom(configurations.implementation.get())
+}
+
+val testComponentImplementation: Configuration by configurations.getting {
     extendsFrom(configurations.implementation.get())
 }
 
@@ -54,6 +78,19 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
     testImplementation("io.kotest:kotest-property:5.8.0")
     testImplementation("io.mockk:mockk:1.13.10")
+
+    testComponentImplementation("io.cucumber:cucumber-java:7.14.0")
+    testComponentImplementation("io.cucumber:cucumber-spring:7.14.0")
+    testComponentImplementation("io.cucumber:cucumber-junit:7.14.0")
+    testComponentImplementation("io.cucumber:cucumber-junit-platform-engine:7.14.0")
+    testComponentImplementation("io.rest-assured:rest-assured:5.3.2")
+    testComponentImplementation("org.junit.platform:junit-platform-suite:1.10.0")
+    testComponentImplementation("org.testcontainers:postgresql:1.20.6")
+    testComponentImplementation("org.testcontainers:testcontainers:1.20.6")
+    testComponentImplementation("io.kotest:kotest-assertions-core:5.9.1")
+    testComponentImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "mockito-core")
+    }
 
     testIntegrationImplementation("io.mockk:mockk:1.13.8")
     testIntegrationImplementation("io.kotest:kotest-assertions-core:5.9.1")

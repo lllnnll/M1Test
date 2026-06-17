@@ -40,6 +40,10 @@ jobs:
       - name: Run integration tests
         run: ./gradlew testIntegration
 
+      # ── Tests de composants
+      - name: Run component tests
+        run: ./gradlew testComponent
+
       # ── Rapport de couverture JaCoCo (unit + intégration)
       - name: Generate JaCoCo report
         run: ./gradlew jacocoTestReport
@@ -51,6 +55,7 @@ jobs:
           files: |
             build/test-results/test/*.xml
             build/test-results/testIntegration/*.xml
+            build/test-results/testComponent/*.xml
 
       # ── Publier la couverture dans le pipeline
       - name: Publish coverage report
