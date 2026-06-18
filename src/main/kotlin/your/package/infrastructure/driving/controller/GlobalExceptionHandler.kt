@@ -14,6 +14,16 @@ class GlobalExceptionHandler {
     fun handleBadRequest(e: HttpMessageNotReadableException): Map<String, String?> =
         mapOf("error" to e.message)
 
+    @ExceptionHandler(NoSuchElementException::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    fun handleNotFound(e: NoSuchElementException): Map<String, String?> =
+        mapOf("error" to e.message)
+
+    @ExceptionHandler(IllegalStateException::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun handleConflict(e: IllegalStateException): Map<String, String?> =
+        mapOf("error" to e.message)
+
     @ExceptionHandler(RuntimeException::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     fun handleRuntimeException(e: RuntimeException): Map<String, String?> =

@@ -16,4 +16,11 @@ class BookUseCase(private val bookRepository: BookRepository) {
     fun getAllBooks(): List<Book> {
         return bookRepository.getAllBooks().sortedBy { it.title }
     }
+
+    fun reserveBook(title: String): Book {
+        val book = bookRepository.getAllBooks().find { it.title == title }
+            ?: throw NoSuchElementException("Livre introuvable : $title")
+        check(!book.reserved) { "Le livre est déjà réservé" }
+        return bookRepository.reserveBook(title)
+    }
 }
