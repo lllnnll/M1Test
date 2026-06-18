@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     jacoco
     id("info.solidsoft.pitest") version "1.19.0"
+    id("io.gitlab.arturbosch.detekt") version "1.23.7"
 }
 
 group = "org.example"
@@ -56,6 +57,22 @@ testing {
                 }
             }
         }
+        val testArchitecture by registering(JvmTestSuite::class) {
+            sources {
+                kotlin {
+                    setSrcDirs(listOf("src/testArchitecture/kotlin"))
+                }
+                compileClasspath += sourceSets.main.get().output
+                runtimeClasspath += sourceSets.main.get().output
+            }
+            targets {
+                all {
+                    testTask.configure {
+                        useJUnitPlatform()
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -64,6 +81,10 @@ val testIntegrationImplementation: Configuration by configurations.getting {
 }
 
 val testComponentImplementation: Configuration by configurations.getting {
+    extendsFrom(configurations.implementation.get())
+}
+
+val testArchitectureImplementation: Configuration by configurations.getting {
     extendsFrom(configurations.implementation.get())
 }
 
@@ -91,6 +112,10 @@ dependencies {
     testComponentImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "mockito-core")
     }
+
+    testArchitectureImplementation("com.tngtech.archunit:archunit-junit5:1.0.1")
+    testArchitectureImplementation("io.kotest:kotest-assertions-core:5.9.1")
+    testArchitectureImplementation("io.kotest:kotest-runner-junit5:5.9.1")
 
     testIntegrationImplementation("io.mockk:mockk:1.13.8")
     testIntegrationImplementation("io.kotest:kotest-assertions-core:5.9.1")
@@ -132,6 +157,19 @@ tasks.jacocoTestReport {
     reports {
         xml.required = true
         html.required = true
+    }
+}
+
+detekt {
+    config.setFrom("config/detekt.yml")
+    buildUponDefaultConfig = true
+}
+
+configurations.matching { it.name.startsWith("detekt") }.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.jetbrains.kotlin") {
+            useVersion("2.0.10")
+        }
     }
 }
 

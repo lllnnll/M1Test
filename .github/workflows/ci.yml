@@ -67,6 +67,14 @@ jobs:
           min-coverage-changed-files: 80
           title: Code Coverage
 
+      # ── Analyse statique Detekt
+      - name: Run Detekt
+        run: ./gradlew detekt
+
+      # ── Tests d'architecture
+      - name: Run architecture tests
+        run: ./gradlew testArchitecture
+
       # ── Tests de mutation PI Test
       - name: Run mutation tests (PIT)
         run: ./gradlew pitest
