@@ -11,8 +11,8 @@ class BookDAO(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
 
     override fun addBook(book: Book): Book {
         namedParameterJdbcTemplate.update(
-            "INSERT INTO books (title, author) VALUES (:title, :author)",
-            mapOf("title" to book.title, "author" to book.author)
+            "INSERT INTO books (title, author, reserved) VALUES (:title, :author, :reserved)",
+            mapOf("title" to book.title, "author" to book.author, "reserved" to book.reserved)
         )
         return book
     }
@@ -24,7 +24,8 @@ class BookDAO(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
         ) { rs, _ ->
             Book(
                 title = rs.getString("title"),
-                author = rs.getString("author")
+                author = rs.getString("author"),
+                reserved = rs.getBoolean("reserved")
             )
         }
     }

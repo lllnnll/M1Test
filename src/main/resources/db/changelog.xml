@@ -4,4 +4,5 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <include file="/db/changelogs/initSchema.xml"/>
+    <include file="/db/changelogs/addReservedColumn.xml"/>
 </databaseChangeLog>
