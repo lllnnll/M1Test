@@ -17,7 +17,7 @@ class BookController(private val bookUseCase: BookUseCase) {
 
     @GetMapping
     fun getAllBooks(): List<BookDTO> =
-        bookUseCase.getAllBooks().map { BookDTO(it.title, it.author) }
+        bookUseCase.getAllBooks().map { BookDTO(it.title, it.author, it.reserved) }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
