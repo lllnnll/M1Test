@@ -58,7 +58,9 @@ class BookStepDefs {
     fun shouldHaveListOfBooks(payload: List<Map<String, Any>>) {
         val expectedResponse = payload.joinToString(separator = ",", prefix = "[", postfix = "]") { line ->
             line.entries.joinToString(separator = ",", prefix = "{", postfix = "}") {
-                """"${it.key}": "${it.value}""""
+                val raw = it.value.toString()
+                val jsonValue = if (raw == "true" || raw == "false") raw else """"$raw""""
+                """"${it.key}": $jsonValue"""
             }
         }
         lastBooksResult!!.extract().body().jsonPath().prettify() shouldBe JsonPath(expectedResponse).prettify()

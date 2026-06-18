@@ -5,6 +5,6 @@ Feature: book management
     And the user creates the book with title "The Pragmatic Programmer" and author "David Thomas"
     When the user gets all books
     Then the list should contains the following books
-      | title                    | author        |
-      | Clean Code               | Robert Martin |
-      | The Pragmatic Programmer | David Thomas  |
+      | title                    | author        | reserved |
+      | Clean Code               | Robert Martin | false    |
+      | The Pragmatic Programmer | David Thomas  | false    |
