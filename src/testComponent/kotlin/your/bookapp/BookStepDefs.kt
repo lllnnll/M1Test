@@ -11,7 +11,9 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import io.restassured.path.json.JsonPath
 import io.restassured.response.ValidatableResponse
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 class BookStepDefs {
 
@@ -20,10 +22,14 @@ class BookStepDefs {
     @LocalServerPort
     private var port: Int = 0
 
+    @Autowired
+    lateinit var jdbcTemplate: NamedParameterJdbcTemplate
+
     @Before
     fun setup(scenario: Scenario) {
         RestAssured.baseURI = "http://localhost:$port"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
+        jdbcTemplate.update("DELETE FROM books", emptyMap<String, Any>())
     }
 
     @Given("the user creates the book with title {string} and author {string}")
