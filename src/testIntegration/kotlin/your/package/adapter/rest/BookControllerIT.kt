@@ -61,6 +61,29 @@ class BookControllerIT : DescribeSpec() {
             }
         }
 
+        describe("POST /books/{title}/reserve") {
+            it("réserve un livre disponible et retourne 200") {
+                every { bookUseCase.reserveBook("Refactoring") } returns Book("Refactoring", "Martin Fowler", reserved = true)
+
+                mockMvc.post("/books/Refactoring/reserve")
+                    .andExpect { status { isOk() } }
+            }
+
+            it("retourne 404 si le livre est introuvable") {
+                every { bookUseCase.reserveBook("Inconnu") } throws NoSuchElementException("Livre introuvable : Inconnu")
+
+                mockMvc.post("/books/Inconnu/reserve")
+                    .andExpect { status { isNotFound() } }
+            }
+
+            it("retourne 409 si le livre est déjà réservé") {
+                every { bookUseCase.reserveBook("Refactoring") } throws IllegalStateException("Le livre est déjà réservé")
+
+                mockMvc.post("/books/Refactoring/reserve")
+                    .andExpect { status { isConflict() } }
+            }
+        }
+
         describe("POST /books") {
             it("crée un livre et retourne 201") {
                 every { bookUseCase.addBook(any(), any()) } returns Book("Clean Code", "Robert Martin")

@@ -45,6 +45,15 @@ class BookStepDefs {
             .statusCode(201)
     }
 
+    @When("the user reserves the book with title {string}")
+    fun reserveBook(title: String) {
+        given()
+            .`when`()
+            .post("/books/$title/reserve")
+            .then()
+            .statusCode(200)
+    }
+
     @When("the user gets all books")
     fun getAllBooks() {
         lastBooksResult = given()

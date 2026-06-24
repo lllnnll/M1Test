@@ -41,6 +41,38 @@ class BookUseCaseTest : DescribeSpec({
         }
     }
 
+    describe("reserveBook") {
+
+        it("devrait réserver un livre disponible") {
+            val book = Book(title = "Clean Code", author = "Robert Martin", reserved = false)
+            val reservedBook = Book(title = "Clean Code", author = "Robert Martin", reserved = true)
+            every { bookRepository.getAllBooks() } returns listOf(book)
+            every { bookRepository.reserveBook("Clean Code") } returns reservedBook
+
+            val result = bookUseCase.reserveBook("Clean Code")
+
+            result.reserved shouldBe true
+            verify { bookRepository.reserveBook("Clean Code") }
+        }
+
+        it("devrait lever une exception si le livre est introuvable") {
+            every { bookRepository.getAllBooks() } returns emptyList()
+
+            shouldThrow<NoSuchElementException> {
+                bookUseCase.reserveBook("Livre Inexistant")
+            }.message shouldBe "Livre introuvable : Livre Inexistant"
+        }
+
+        it("devrait lever une exception si le livre est déjà réservé") {
+            val book = Book(title = "Clean Code", author = "Robert Martin", reserved = true)
+            every { bookRepository.getAllBooks() } returns listOf(book)
+
+            shouldThrow<IllegalStateException> {
+                bookUseCase.reserveBook("Clean Code")
+            }.message shouldBe "Le livre est déjà réservé"
+        }
+    }
+
     describe("getAllBooks") {
 
         it("devrait retourner la liste triée alphabétiquement par titre") {

@@ -70,5 +70,24 @@ class BookRepositoryIT : FunSpec() {
 
             result shouldBe emptyList()
         }
+
+        test("reserveBook marque le livre comme réservé en base") {
+            bookRepository.addBook(Book("Clean Code", "Robert Martin"))
+
+            val result = bookRepository.reserveBook("Clean Code")
+
+            result.title shouldBe "Clean Code"
+            result.author shouldBe "Robert Martin"
+            result.reserved shouldBe true
+        }
+
+        test("getAllBooks retourne le livre avec reserved à true après réservation") {
+            bookRepository.addBook(Book("Clean Code", "Robert Martin"))
+            bookRepository.reserveBook("Clean Code")
+
+            val result = bookRepository.getAllBooks().first { it.title == "Clean Code" }
+
+            result.reserved shouldBe true
+        }
     }
 }
